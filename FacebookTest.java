@@ -1,29 +1,38 @@
-package com.selenium.demo;
+package com.simplilearn;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 
 public class FacebookTest {
 
-	public static void main(String[] args) {
-		
+	SoftAssert soft;
+	WebDriver driver;
+
+	@BeforeMethod
+	public void beforeMethod() {
+		soft = new SoftAssert();
+	}
+
+	@AfterMethod
+	public void afterMethod() {
+		soft = null;
+	}
+
+	@Test
+	public void launchFB() {
 		System.setProperty("webdriver.chrome.driver", "D:\\Selenium\\chromedriver.exe");
-		
-		WebDriver driver = new ChromeDriver();
+		driver = new ChromeDriver();
 		driver.get("https://www.facebook.com/");
-		
-		WebElement email= driver.findElement(By.id("email"));
-		String hint=email.getAttribute("placeholder");
-		System.out.println(hint);
-		
-		WebElement element = driver.findElement(By.className("_8eso"));
-		System.out.println(element.getText());
-		
-		//Link Text
-		WebElement link = driver.findElement(By.linkText("Forgotten password?"));
-		link.click();
-		//driver.close();
+	}
+
+	@Test(dependsOnMethods = {"launchFB"})
+	public void titleTest() {
+		soft.assertEquals("Facebook – log in or sign up", driver.getTitle());
+		soft.assertAll();
+		driver.close();
 	}
 }
